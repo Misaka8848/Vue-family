@@ -1,8 +1,8 @@
 /*
  * @Author: Alter 
  * @Date: 2020-07-25 14:54:56 
- * @Last Modified by:   Alter 
- * @Last Modified time: 2020-07-25 14:54:56 
+ * @Last Modified by: Alter
+ * @Last Modified time: 2020-07-25 17:04:06
  */
 <template>
   <section class="real-app">
@@ -13,8 +13,17 @@
       placeholder="接下来做什么"
       @keyup.enter="addTodo"
     />
-    <item v-for="todo in todos" :todo="todo" :key="todo.id"></item>
-    <tabs :filter="filter"></tabs>
+    <item 
+      v-for="todo in filtedTodos" 
+      :todo="todo" 
+      :key="todo.id" 
+      @del="deleteTodo"></item>
+    <tabs 
+      :filter="filter"
+      :todos="todos"
+      @toggle = "toggleFilter"
+      @clearAllCompleted = "clearAllCompleted"
+    />
   </section>
 </template>
 
@@ -27,7 +36,17 @@ export default {
     Item,
     Tabs,
   },
-  data: function () {
+  computed:{
+    filtedTodos(){
+      if(this.filter === 'all')
+        return this.todos
+      const completed = this.filter === 'completed' ;
+      return this.todos.filter(todo => todo.completed === completed)
+
+    }
+    
+  },
+  data() {
     return {
       todos: [],
       filter: "all",
@@ -36,7 +55,7 @@ export default {
   methods: {
     // e是event对象
     addTodo(e) {
-      //TODO？ this是todo组件本身，因为是在input标签里面调用的。
+      //TODO？ this是todo组件本身，methods里面的方法代表组件本身的方法吗？
       // todos[]是todo组件的属性，todos数组包含的todo对象传递给item组件,所以todo对象是item组件的属性
       // 父组件和子组件的传递
       this.todos.unshift({
@@ -47,6 +66,15 @@ export default {
         completed: false,
       });
       e.target.value='';
+    },
+    deleteTodo(id){
+      this.todos.splice(this.todos.findIndex(todo => todo.id === id),1)
+    },
+    toggleFilter(state){
+      this.filter = state
+    },
+    clearAllCompleted(){
+      this.todos = this.todos.filter(todo => !todo.completed)
     },
   },
 };

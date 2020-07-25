@@ -18,7 +18,10 @@ export default {
   },
   
   methods: {
-    deleteTodo() {},
+    deleteTodo() {
+      // &emit向父组件传递事件，del是事件名，后面的是传入的值,供父组件的回调函数使用
+      this.$emit('del', this.todo.id)
+    },
   },
 };
 </script>
