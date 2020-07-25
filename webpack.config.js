@@ -2,14 +2,18 @@
  * @Author: Alter 
  * @Date: 2020-07-23 22:07:59 
  * @Last Modified by: Alter
- * @Last Modified time: 2020-07-24 01:15:57
+ * @Last Modified time: 2020-07-24 16:46:05
  */
 
 // 引入path模块
 const path  = require('path')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')  
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const HtmlPlugin = require('html-webpack-plugin')  
+const webpack = require('webpack')
+
 // 判断环境process.env 后面的环境变量在package.json定义的
 const isDev = process.env.NODE_ENV === 'development'
+
 
 const config = {
   // 编译目标
@@ -57,29 +61,59 @@ const config = {
           // loader是叠加的从下往上依次处理，每个loader只处理自己的部分
           'style-loader',
           'css-loader',
+          {
+            loader :'postcss-loader',
+            options:{
+              sourceMap:true,
+            }
+          },
           'stylus-loader'
         ]
+      },
+      {
+        test: /\.jsx$/,
+        loader: 'babel-loader'
       }
     ]
   },
 
 
   plugins: [
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new HtmlPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: isDev ? '"development"' : '"production"'
+      }
+    })
   ],
 
 }
 
 if (isDev){
+  // 映射开发的代码和编译之后的代码，方便调试
+  config.devtool = '#cheap-module-eval-source-map'
+  // Dev环境配置
   config.devServer = {
     port:'8000',
-    // 0.0.0.0可以多个地方访问
+    // 0.0.0.0可以多个地方访问,代表的含义是所有网络，不要直接去访问http://0.0.0.0:8000
+    // 可以访问http://localhost:8000
     host:'0.0.0.0',
     // 让webpack的错误限到网页上
     overlay:{
       errors:true
-    }
+    },
+    // 热加载：更改部分代码时，不用刷新整个页面
+    hot: true
+
   }
+
+  config.plugins.push(
+    // 开启热加载
+    new webpack.HotModuleReplacementPlugin(),
+    // 减少无用信息展示
+    new webpack.NoEmitOnErrorsPlugin()
+  )
 }
 
 module.exports = config

@@ -1,9 +1,13 @@
+/*
+ * @Author: Alter 
+ * @Date: 2020-07-24 18:34:18 
+ * @Last Modified by: Alter
+ * @Last Modified time: 2020-07-24 18:35:50
+ */
 import Vue from 'vue'
 import App from './app.vue'
 
-import './assets/styles/test.css'
-import './assets/styles/test-stylus.styl'
-import './assets/images/亚里沙.jpg'
+import './assets/styles/global.styl'
 
 const root = document.createElement('div')
 document.body.appendChild(root)
