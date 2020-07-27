@@ -2,7 +2,6 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HTMLPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
