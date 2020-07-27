@@ -17,3 +17,7 @@
 1. 无法SEO
 2. 白屏等待数据时间太长
 
+## 项目环境搭建
+
+[引入原版前置项目](https://github.com/Misaka8848/vue-todo-tech)
+

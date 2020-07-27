@@ -1,23 +1,17 @@
-const path = require('path');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const HTMLPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path')
+const HTMLPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
+const ExtractPlugin = require('extract-text-webpack-plugin')
 
-const isDev = process.env.NODE_ENV === 'development';
-
-
+const isDev = process.env.NODE_ENV === 'development'
 
 const config = {
-  //入口， __dirname 是当前文件所在目录
+  target: 'web',
   entry: path.join(__dirname, 'src/index.js'),
-  //输出
   output: {
     filename: 'bundle.[hash:8].js',
     path: path.join(__dirname, 'dist')
   },
-  //webpack原生只支持js文件类型，只支持ES5语法，我们使用以.vue文件名结尾的文件时，需要为其指定loader
   module: {
     rules: [
       {
@@ -28,7 +22,6 @@ const config = {
         test: /\.jsx$/,
         loader: 'babel-loader'
       },
-      //将小于1024b的图片转为base64，减少http请求
       {
         test: /\.(gif|jpg|jpeg|png|svg)$/,
         use: [
@@ -36,99 +29,84 @@ const config = {
             loader: 'url-loader',
             options: {
               limit: 1024,
-              name: '[name].[ext]',
-              outputPath: 'assets/img/'
+              name: '[name]-aaa.[ext]'
             }
           }
-          ]
+        ]
       }
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(),
-    // 请确保引入这个插件！
-    new VueLoaderPlugin(),
-    new HTMLPlugin(),
-    //new webpack.HotModuleReplacementPlugin(),
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // all options are optional
-      filename: '[name].css',
-      chunkFilename: '[id].css',
-      ignoreOrder: false, // Enable to remove warnings about conflicting order
-    }),
-  ],
-
-  optimization: {
-    splitChunks: {
-      chunks (chunk) {
-        // exclude `my-excluded-chunk`
-        return chunk.name !== 'my-excluded-chunk';
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: isDev ? '"development"' : '"production"'
       }
-    }
-  }
+    }),
+    new HTMLPlugin()
+  ]
 }
 
-if(isDev) {
+if (isDev) {
   config.module.rules.push({
-    //css预处理器，使用模块化的方式写css代码
-    //stylus-loader专门用来处理stylus文件，处理完成后变成css文件，
-    //交给css-loader.webpack的loader就是这样一级一级向上传递，每一层loader只处理自己关心的部分
     test: /\.styl/,
     use: [
-      'vue-style-loader',
+      'style-loader',
       'css-loader',
-      { 
-        loader: 'postcss-loader', 
-        options: { sourceMap: true } 
+      {
+        loader: 'postcss-loader',
+        options: {
+          sourceMap: true,
+        }
       },
       'stylus-loader'
-    ]  
-  });
+    ]
+  })
+  config.devtool = '#cheap-module-eval-source-map'
   config.devServer = {
+    port: 8000,
     host: '0.0.0.0',
-    port: '8000',
     overlay: {
-      errors: true
+      errors: true,
     },
     hot: true
   }
+  config.plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
+  )
 } else {
-  config.output.filename = '[name].[chunkhash:8].js';
+  config.entry = {
+    app: path.join(__dirname, 'src/index.js'),
+    vendor: ['vue']
+  }
+  config.output.filename = '[name].[chunkhash:8].js'
   config.module.rules.push(
-    //css预处理器，使用模块化的方式写css代码
-      //stylus-loader专门用来处理stylus文件，处理完成后变成css文件，交给css-loader.webpack的loader就是这样一级一级向上传递，每一层loader只处理自己关心的部分
-      {
-        test: /\.styl/,
+    {
+      test: /\.styl/,
+      use: ExtractPlugin.extract({
+        fallback: 'style-loader',
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              // you can specify a publicPath here
-              // by default it uses publicPath in webpackOptions.output
-              publicPath: './',
-              hmr: process.env.NODE_ENV === 'development',
-            },
-          },
           'css-loader',
-          { 
-            loader: 'postcss-loader', 
-            options: { sourceMap: true } 
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true,
+            }
           },
           'stylus-loader'
         ]
-      },
-  );
-
+      })
+    },
+  )
   config.plugins.push(
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // all options are optional
-      filename: 'styles.[chunkhash].[name].css',
-      chunkFilename: '[id].css',
-      ignoreOrder: false, // Enable to remove warnings about conflicting order
+    new ExtractPlugin('styles.[contentHash:8].css'),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'runtime'
     })
-  );
+  )
 }
 
-module.exports = config;
+module.exports = config
