@@ -1,10 +1,10 @@
-<template id="">
-  <header class="main-header">
+<template >
+  <header :class="$style.mainHeader">
     <h1>TODOS</h1>
   </header>
 </template>
 
-<style lang="stylus" scoped>
+<style lang="stylus" module>
 .main-header {
   text-align: center;
 

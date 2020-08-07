@@ -2,10 +2,10 @@
  * @Author: Alter 
  * @Date: 2020-07-24 18:59:48 
  * @Last Modified by: Alter
- * @Last Modified time: 2020-07-25 20:36:29
+ * @Last Modified time: 2020-08-07 22:57:13
  */
 
-import '../assets/styles/footer.styl'
+import className from '../assets/styles/footer.styl'
 
 export default {
   data(){
@@ -15,7 +15,7 @@ export default {
   },
   render(){
     return (
-      <div id="footer">
+      <div id={className.footer}>
         <span>Written by {this.author} </span>
       </div>
     )

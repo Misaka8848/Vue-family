@@ -35,8 +35,8 @@ if (isDev) {
         {
           test: /\.styl/,
           use: [
-            "style-loader",
-            "css-loader",
+            "vue-style-loader",
+            'css-loader',
             {
               loader: "postcss-loader",
               options: {
@@ -67,7 +67,7 @@ if (isDev) {
         {
           test: /\.styl/,
           use: ExtractPlugin.extract({
-            fallback: "style-loader",
+            fallback: "vue-style-loader",
             use: [
               "css-loader",
               {
