@@ -6,7 +6,7 @@
 
 ## 个人笔记
 
-[Vue 全家桶笔记](https://www.notion.so/Vue-9da2dffc66c3499fb60ed6baf9698ea6
+[Vue 全家桶笔记](https://www.notion.so/Vue-9da2dffc66c3499fb60ed6baf9698ea6)
 
 ## 项目环境搭建
 
