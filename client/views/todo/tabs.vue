@@ -18,32 +18,32 @@ export default {
   props: {
     filter: {
       type: String,
-      required: true,
+      required: true
     },
-    todos:{
-      type:Array,
-      required: true,
+    todos: {
+      type: Array,
+      required: true
     }
   },
-  data() {
+  data () {
     return {
-      states: ["all", "active", "completed"],
-    };
+      states: ['all', 'active', 'completed']
+    }
   },
-  computed:{
-    unCompleteTodoLength(){
+  computed: {
+    unCompleteTodoLength () {
       return this.todos.filter(todo => !todo.completed).length
     }
   },
   methods: {
-    clearAllCompleted() {
+    clearAllCompleted () {
       this.$emit('clearAllCompleted')
     },
-    toggleFilter(state) {
+    toggleFilter (state) {
       this.$emit('toggle', state)
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="stylus" scoped>

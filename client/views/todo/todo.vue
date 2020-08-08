@@ -1,6 +1,6 @@
 /*
- * @Author: Alter 
- * @Date: 2020-07-25 14:54:56 
+ * @Author: Alter
+ * @Date: 2020-07-25 14:54:56
  * @Last Modified by: Alter
  * @Last Modified time: 2020-07-25 23:59:16
  */
@@ -13,12 +13,12 @@
       placeholder="接下来做什么"
       @keyup.enter="addTodo"
     />
-    <item 
-      v-for="todo in filtedTodos" 
-      :todo="todo" 
-      :key="todo.id" 
+    <item
+      v-for="todo in filtedTodos"
+      :todo="todo"
+      :key="todo.id"
       @del="deleteTodo"></item>
-    <tabs 
+    <tabs
       :filter="filter"
       :todos="todos"
       @toggle = "toggleFilter"
@@ -28,34 +28,32 @@
 </template>
 
 <script>
-import Item from "./item.vue";
-import Tabs from "./tabs.vue";
-let id = 0;
+import Item from './item.vue'
+import Tabs from './tabs.vue'
+let id = 0
 export default {
   components: {
     Item,
-    Tabs,
+    Tabs
   },
-  computed:{
-    filtedTodos(){
-      if(this.filter === 'all')
-        return this.todos
-      const completed = this.filter === 'completed' ;
+  computed: {
+    filtedTodos () {
+      if (this.filter === 'all') { return this.todos }
+      const completed = this.filter === 'completed'
       return this.todos.filter(todo => todo.completed === completed)
-
     }
-    
+
   },
-  data() {
+  data () {
     return {
       todos: [],
-      filter: "all",
-    };
+      filter: 'all'
+    }
   },
   methods: {
     // e是event对象
-    addTodo(e) {
-      //TODO？ this是todo组件本身，methods里面的方法代表组件本身的方法吗？
+    addTodo (e) {
+      // TODO？ this是todo组件本身，methods里面的方法代表组件本身的方法吗？
       // todos[]是todo组件的属性，todos数组包含的todo对象传递给item组件,所以todo对象是item组件的属性
       // 父组件和子组件的传递
       this.todos.unshift({
@@ -63,21 +61,21 @@ export default {
         // e.target代表直接接受事件或者绑定事件的DOM元素，这里是input。
         // input的value属性是输入的值，trim()是去除字符串头尾空格
         content: e.target.value.trim(),
-        completed: false,
-      });
-      e.target.value='';
+        completed: false
+      })
+      e.target.value = ''
     },
-    deleteTodo(id){
-      this.todos.splice(this.todos.findIndex(todo => todo.id === id),1)
+    deleteTodo (id) {
+      this.todos.splice(this.todos.findIndex(todo => todo.id === id), 1)
     },
-    toggleFilter(state){
+    toggleFilter (state) {
       this.filter = state
     },
-    clearAllCompleted(){
+    clearAllCompleted () {
       this.todos = this.todos.filter(todo => !todo.completed)
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="stylus" scoped>
