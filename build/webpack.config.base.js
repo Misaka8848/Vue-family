@@ -1,6 +1,8 @@
 const path = require('path')
 const createVueLoaderOptions = require('./vue-loader.config')
 const isDev = process.env.NODE_ENV === 'development'
+
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const config = {
   target: 'web',
   mode: process.env.NODE_ENV || 'production', // development || production
@@ -38,13 +40,24 @@ const config = {
           {
             loader: 'url-loader',
             options: {
-              limit: 1024,
-              name: 'resources/[path][name]-[hash:8].[ext]'
+              limit: 80000,
+              name: 'resources/[path][name]-[hash:8].[ext]',
+              esModule: false
             }
           }
         ]
       }
     ]
+  },
+  plugins: [
+    // 请确保引入这个插件来施展魔法
+    new VueLoaderPlugin()
+  ],
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    },
+    runtimeChunk: true
   }
 }
 module.exports = config

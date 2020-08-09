@@ -1,7 +1,7 @@
 const path = require('path')
 const HTMLPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const ExtractPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const baseConfig = require('./webpack.config.base')
 const { merge } = require('webpack-merge')
@@ -65,22 +65,37 @@ if (isDev) {
       rules: [
         {
           test: /\.styl/,
-          use: ExtractPlugin.extract({
-            fallback: 'vue-style-loader',
-            use: ['vue-style-loader', 'css-loader', 'stylus-loader']
-          })
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                // you can specify a publicPath here
+                // by default it uses publicPath in webpackOptions.output
+                publicPath: '../'
+              }
+            },
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: { sourceMap: true }
+            },
+            'stylus-loader'
+          ]
+        },
+        {
+          test: /\.css$/,
+          use: ['vue-style-loader', 'css-loader']
         }
       ]
     },
     plugins: defaultPlugins.concat([
-      new ExtractPlugin('styles.[contentHash:8].css')
-    ]),
-    optimization: {
-      splitChunk: {
-        chunks: 'all'
-      },
-      runtimeChunk: true
-    }
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // all options are optional
+        filename: 'css/[name].[hash:8].css',
+        ignoreOrder: false // Enable to remove warnings about conflicting order
+      })
+    ])
   })
 }
 
