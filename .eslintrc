@@ -1,12 +1,11 @@
 {
   "extends": "standard",
   "parser": "vue-eslint-parser",
+  "rules": { "no-new": 0 },
   "parserOptions": {
     "parser": "babel-eslint",
     "sourceType": "module",
     "allowImportExportEverywhere": false
-},
-  "plugins":[
-    "html"
-  ]
+  },
+  "plugins": ["html"]
 }
