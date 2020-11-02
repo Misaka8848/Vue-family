@@ -2,7 +2,7 @@
  * @Author: Alter
  * @Date: 2020-07-25 14:54:56
  * @Last Modified by: Alter
- * @Last Modified time: 2020-07-25 23:59:16
+ * @Last Modified time: 2020-09-04 05:30:23
  */
 <template>
   <section class="real-app">
@@ -13,17 +13,14 @@
       placeholder="接下来做什么"
       @keyup.enter="addTodo"
     />
-    <item
-      v-for="todo in filtedTodos"
-      :todo="todo"
-      :key="todo.id"
-      @del="deleteTodo"></item>
+    <item v-for="todo in filtedTodos" :todo="todo" :key="todo.id" @del="deleteTodo"></item>
     <tabs
       :filter="filter"
       :todos="todos"
-      @toggle = "toggleFilter"
-      @clearAllCompleted = "clearAllCompleted"
+      @toggle="toggleFilter"
+      @clearAllCompleted="clearAllCompleted"
     />
+    <!-- <router-view></router-view> -->
   </section>
 </template>
 
@@ -32,6 +29,23 @@ import Item from './item.vue'
 import Tabs from './tabs.vue'
 let id = 0
 export default {
+  mounted () { console.log('todo mounted') },
+  // beforeRouteEnter (to, from, next) {
+  //   console.log('todo before enter', this)
+  //   next((vm) => {
+  //     console.log('after enter vm.id is ', vm.id)
+  //   })
+  // },
+  // beforeRouteUpdate (to, from, next) {
+  //   console.log('todo update')
+  //   next()
+  // },
+  // beforeRouteLeave (to, from, next) {
+  //   console.log('todo leave')
+  //   if (global.confirm('are you sure')) {
+  //     next()
+  //   }
+  // },
   components: {
     Item,
     Tabs
@@ -44,6 +58,7 @@ export default {
     }
 
   },
+  props: ['id'],
   data () {
     return {
       todos: [],
@@ -75,6 +90,7 @@ export default {
       this.todos = this.todos.filter(todo => !todo.completed)
     }
   }
+
 }
 </script>
 

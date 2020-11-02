@@ -2,16 +2,43 @@
  * @Author: Alter
  * @Date: 2020-07-24 18:34:18
  * @Last Modified by: Alter
- * @Last Modified time: 2020-08-08 21:51:51
+ * @Last Modified time: 2020-09-04 15:11:13
  */
 import Vue from 'vue'
+import Vuex from 'vuex'
+import VueRouter from 'vue-router'
 import App from './app.vue'
 
 import './assets/styles/global.styl'
+import createRouter from './config/router'
+import createStore from './store/store'
 
-const root = document.createElement('div')
-document.body.appendChild(root)
-// TODO?h,render,$mount()是什么
+Vue.use(VueRouter)
+Vue.use(Vuex)
+const router = createRouter()
+const store = createStore()
+
+router.beforeEach((to, from, next) => {
+  console.log('before each invoked')
+  next()
+  // if (to.fullPath === '/app') {
+  //   next('/login') // 也可以传对象 next({ path: '/login' })
+  // } else {
+  //   next()
+  // }
+})
+
+router.beforeResolve((to, from, next) => {
+  console.log('before resolve invoked')
+  next()
+})
+
+router.afterEach((to, from) => {
+  console.log('after each invoked')
+})
+
 new Vue({
+  router,
+  store,
   render: h => h(App)
-}).$mount(root)
+}).$mount('#root')
